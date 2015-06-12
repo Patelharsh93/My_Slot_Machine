@@ -3,6 +3,9 @@
 /// <reference path="typings/tweenjs/tweenjs.d.ts" />
 /// <reference path="typings/soundjs/soundjs.d.ts" />
 /// <reference path="typings/preloadjs/preloadjs.d.ts" />
+/// <reference path="../config/constants.ts" />
+/// <reference path="../objects/label.ts" />
+/// <reference path="../objects/button.ts" />
 //Game framework variable
 var canvas = document.getElementById("canvas");
 var stage;
@@ -12,8 +15,43 @@ var manifest = [
     { id: "background", src: "assets/images/slotMachine.png" },
     { id: "clicked", src: "assets/audio/Clicked.wav" }
 ];
+var atlas = {
+    "images": ["assets/images/atlas.png"],
+    "frames": [
+        [2, 2, 64, 64],
+        [2, 68, 64, 64],
+        [2, 134, 64, 64],
+        [200, 2, 49, 49],
+        [200, 53, 49, 49],
+        [200, 104, 49, 49],
+        [68, 2, 64, 64],
+        [134, 2, 64, 64],
+        [68, 68, 64, 64],
+        [134, 68, 64, 64],
+        [134, 134, 49, 49],
+        [68, 134, 64, 64],
+        [185, 155, 49, 49]
+    ],
+    "animations": {
+        "bananaSymbol": [0],
+        "barSymbol": [1],
+        "bellSymbol": [2],
+        "betMaxButton": [3],
+        "betOneButton": [4],
+        "betTenButton": [5],
+        "blankSymbol": [6],
+        "cherrySymbol": [7],
+        "grapesSymbol": [8],
+        "orangeSymbol": [9],
+        "resetButton": [10],
+        "sevenSymbol": [11],
+        "spinButton": [12]
+    }
+};
 //Game variables
 var background;
+var textureALtlas;
+var spinButton;
 //preloaded Function
 function preload() {
     assets = new createjs.LoadQueue();
@@ -21,6 +59,8 @@ function preload() {
     //assets.on is an event Listener, triggers when assets are cmpletely loaded
     assets.on("complete", init, this);
     assets.loadManifest(manifest); //Manifest is assets manager, an array of object
+    //load texture atlas
+    textureALtlas = new createjs.SpriteSheet(atlas);
     //Setup statics object
     setupStats();
 }
@@ -51,7 +91,7 @@ function gameLoop() {
     stats.end(); //
 }
 //Call back function that allows me to respond to button clcik events
-function pinkButtonClicked(event) {
+function spinButtonClicked(event) {
     createjs.Sound.play("clicked");
 }
 //Call back function that changes the alpha transparency of the button
@@ -60,5 +100,9 @@ function main() {
     //add in slot machine graphics
     background = new createjs.Bitmap(assets.getResult("background"));
     stage.addChild(background);
+    //add spinButton Sprite
+    spinButton = new objects.Button("spinButton", 252, 334, false);
+    stage.addChild(spinButton);
+    spinButton.on("click", spinButtonClicked, this);
 }
 //# sourceMappingURL=game.js.map
