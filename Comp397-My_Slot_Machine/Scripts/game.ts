@@ -68,11 +68,11 @@ var atlas = {
 }
 
 //Game variables
-var background: createjs.Bitmap
-var blank: createjs.Bitmap
+var background: createjs.Bitmap             //slot Machine
 
-var jackpotAmt: createjs.Text
-var playerBetAmt: createjs.Text
+
+var jackpotAmt: createjs.Text               //Jackpot Value
+var playerBetAmt: createjs.Text             //Amount on Bet
 var playerCreditAmt:createjs.Text
 
 var textureALtlas: createjs.SpriteSheet
@@ -94,11 +94,10 @@ var bells = 0;
 var sevens = 0;
 var blanks = 0;
 
-var playerMoney = 1000;
-var playerMoneySet;
+var playerMoney = 1000;                 //Intial Player Money
+var playerMoneySet;                      
 var win = 0;
 var jackpot = 5000;
-var turn = 0;
 var playerBet = 0;
 var spinResult;
 var fruits = "";
@@ -172,8 +171,7 @@ function checkRange(value, lowerBounds, upperBounds) {
     }
 }
 
-/* When this function is called it determines the betLine results.
-e.g. Bar - Orange - Banana */
+// When this function is called it determines the betLine results.
 function Reels() {
     var betLine = ["","",""];
     var outCome = [0, 0, 0];
@@ -219,23 +217,29 @@ function Reels() {
     return betLine;
 }
 
-//Spin Button click events
+//Spin Button clicked event
 function spinButtonClicked(event: createjs.MouseEvent)
 {
+    //Player Amount checking
     if (playerMoney == 0) {
         if (confirm("NO Money! \nPlay again?")) {
             resetAll();
         }
     }
+
+    //Not enough money to bet
     else if (playerBet > playerMoney) {
         alert("Not enought to play the bet");
     }
     else if (playerBet == 0)
         alert("Please select how much you want to bet");
+
+    //Money is more than bet amount
     else if (playerBet <= playerMoney) {
         playerMoney = playerMoney - playerBet;
         playerMoneySet = playerMoney;
-        spinResult = Reels();
+        spinResult = Reels();  //generates random number
+        //Spin for first slot+++++++++++++++++++++++++++++++++++++++++++++
         switch (spinResult[0]) {
             case "blank":
                 reel0 = new createjs.Bitmap(assets.getResult("blank"));
@@ -287,6 +291,7 @@ function spinButtonClicked(event: createjs.MouseEvent)
                 break;
             
         }
+        //Spin for second slot+++++++++++++++++++++++++++++ 
         switch (spinResult[1]) {
             case "blank":
                 reel1 = new createjs.Bitmap(assets.getResult("blank"));
@@ -338,6 +343,7 @@ function spinButtonClicked(event: createjs.MouseEvent)
                 break;
            
         }
+        //spin for third slot+++++++++++++++++++++++++++++++++++++
         switch (spinResult[2]) {
             case "blank":
                 reel2 = new createjs.Bitmap(assets.getResult("blank"));
@@ -388,17 +394,16 @@ function spinButtonClicked(event: createjs.MouseEvent)
                 stage.addChild(reel2);
                 break;       
         }
-       // determineWinnings();
+        ResultOutput();     //displays result
         UpdatePlayerMoney();
     }
 }
 
-//reset button click events
+//reset button click++++++++++++++++++++++++++++++++++++++++++
 function resetAll() {
     playerMoney = 1000;
     win = 0;
     jackpot = 5000;
-    turn = 0;
     playerBet = 0;
     stage.removeChild(playerBetAmt);
     stage.removeChild(playerCreditAmt);
@@ -409,7 +414,7 @@ function resetAll() {
 
 }
 
-
+//reset all fruits+++++++++++++++++++++++++++++++++++++++
 function resetFruit() {
     grapes = 0;
     bananas = 0;
@@ -421,6 +426,7 @@ function resetFruit() {
     blanks = 0;
 }
 
+//one bet function+++++++++++++++++++++++++++++++++++++
 function betOne()
 {
     stage.removeChild(playerBetAmt);  
@@ -441,7 +447,7 @@ function betOne()
     
 }
 
-
+//Ten bet function+++++++++++++++++++++++++++++++++++
 function betTen() {
     stage.removeChild(playerBetAmt);  
     playerBet = 10; 
@@ -460,6 +466,7 @@ function betTen() {
     
 }
 
+//Maximum bet function+++++++++++++++++++++++++++++++++++++
 function betMax() {
     stage.removeChild(playerBetAmt);  
 
@@ -481,8 +488,8 @@ function betMax() {
 }
 
 
-
-function determineWinnings() {
+//Function that will show whether user won or lost++++++++++++++++++++++++++++++++++++
+function ResultOutput() {
     if (blanks == 0) {
         if (grapes == 3) {
             win = playerBet * 10;
@@ -559,13 +566,14 @@ function WinMessage() {
     UpdatePlayerMoney();
 }
 
+//Player Amount Updated after every spin+++++++++++++++++++++++++++++++++++++++
 function UpdatePlayerMoney() {   
     stage.removeChild(playerCreditAmt); 
     playerCreditAmt = new objects.Label("" + playerMoneySet, 43, 303, false);
     stage.addChild(playerCreditAmt);
 }
 
-//Our main function
+//Our main function++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
 function main() {
    //add in slot machine graphics
     background = new createjs.Bitmap(assets.getResult("background"));
@@ -582,10 +590,6 @@ function main() {
     playerCreditAmt.x = 43;
     playerCreditAmt.y = 303;
     stage.addChild(playerCreditAmt);
-
-    //add in blankSymbol Graphics
-    blank = new createjs.Bitmap(assets.getResult("blank"));
-    stage.addChild(blank);
 
     //add spinButton Sprite
     spinButton = new objects.Button("spinButton", 252, 334, false);
